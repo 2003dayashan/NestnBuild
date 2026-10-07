@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nest &amp; Build | Best Home &amp; Living Products</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <a href="/" class="logo"><img src="/logo.png" alt="Nest &amp; Build logo"></a>
+    <a href="/" class="site-name">Nest &amp; Build</a>
+    <span class="tagline">Curated Guides &amp; Top Product Recommendations</span>
+  </header>
+
+  <div class="container">
+    <div class="disclaimer">
+      <em>Disclaimer: As an Amazon Associate, we earn from qualifying purchases.</em>
+    </div>
+
+    <h2 class="section-title">Latest Recommendations</h2>
+    <div id="blog-list" class="grid-container">
+      <p class="empty">Loading guides...</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Nest &amp; Build. All rights reserved.
+  </footer>
+
+  <script>
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    fetch('/posts.json', { cache: 'no-cache' })
+      .then(function (r) { return r.json(); })
+      .then(function (posts) {
+        var list = document.getElementById('blog-list');
+        if (!posts.length) {
+          list.innerHTML = '<p class="empty">New guides are coming soon!</p>';
+          return;
+        }
+        // newest first (last item in posts.json is newest)
+        list.innerHTML = posts.slice().reverse().map(function (p) {
+          return '<a class="post-card" href="/posts/' + esc(p.slug) + '.html">' +
+            '<img src="/images/' + esc(p.slug) + '.jpg" alt="' + esc(p.title) + '" loading="lazy">' +
+            '<div class="body"><h3>' + esc(p.title) + '</h3><span class="btn">Read Guide</span></div></a>';
+        }).join('');
+      })
+      .catch(function () {
+        document.getElementById('blog-list').innerHTML = '<p class="empty">Guides could not be loaded. Please try again later.</p>';
+      });
+  </script>
+</body>
+</html>
